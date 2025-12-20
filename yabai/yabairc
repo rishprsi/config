@@ -7,14 +7,14 @@ set -x
 declare -A gaps
 declare -A color
 
-gaps["top"]="4"
-gaps["bottom"]="4"
-gaps["left"]="4"
-gaps["right"]="4"
-gaps["inner"]="4"
+gaps["top"]="2"
+gaps["bottom"]="2"
+gaps["left"]="2"
+gaps["right"]="2"
+gaps["inner"]="2"
 
-color["focused"]="0xE0808080"
-color["normal"]="0x00010101"
+color["focused"]="0x00135a7e"
+color["normal"]="0xff000000"
 color["preselect"]="0xE02d74da"
 
 # Uncomment to refresh ubersicht widget on workspace change
@@ -45,10 +45,11 @@ yabai -m config window_opacity off
 yabai -m config window_shadow float
 
 yabai -m config window_border on
-yabai -m config window_border_width 1
-yabai -m config active_window_border_color "${color["focused"]}"
-yabai -m config normal_window_border_color "${color["normal"]}"
+yabai -m config window_border_width 3
+yabai -m config active_window_border_color 0xf0135a7e
+yabai -m config normal_window_border_color 0x00000000
 yabai -m config insert_feedback_color "${color["preselect"]}"
+borders active_color=0xf0135a7e inactive_color=0x00000000 width=5.0 &
 
 yabai -m config active_window_opacity 1.0
 yabai -m config normal_window_opacity 0.90
@@ -56,9 +57,22 @@ yabai -m config split_ratio 0.50
 
 yabai -m config auto_balance off
 
-yabai -m config mouse_modifier fn
+yabai -m config mouse_modifier alt
 yabai -m config mouse_action1 move
 yabai -m config mouse_action2 resize
+
+# ===== Signals ================================
+
+yabai -m signal --add event=application_front_switched action="${ubersicht_spaces_refresh_command}"
+yabai -m signal --add event=display_changed action="${ubersicht_spaces_refresh_command}"
+yabai -m signal --add event=space_changed action="${ubersicht_spaces_refresh_command}"
+yabai -m signal --add event=window_created action="${ubersicht_spaces_refresh_command}"
+yabai -m signal --add event=window_destroyed action="${ubersicht_spaces_refresh_command}"
+yabai -m signal --add event=window_focused action="${ubersicht_spaces_refresh_command}"
+yabai -m signal --add event=window_title_changed action="${ubersicht_spaces_refresh_command}"
+
+set +x
+printf "yabai: configuration loaded...\\n"
 
 # ===== Rules ==================================
 
@@ -74,16 +88,4 @@ yabai -m rule --add label="Dictionary" app="^Dictionary$" manage=off
 yabai -m rule --add label="mpv" app="^mpv$" manage=off
 yabai -m rule --add label="Software Update" title="Software Update" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
-
-# ===== Signals ================================
-
-yabai -m signal --add event=application_front_switched action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=display_changed action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=space_changed action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=window_created action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=window_destroyed action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=window_focused action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=window_title_changed action="${ubersicht_spaces_refresh_command}"
-
-set +x
-printf "yabai: configuration loaded...\\n"
+yabai -m rule --apply
